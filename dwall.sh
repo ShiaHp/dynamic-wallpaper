@@ -112,7 +112,7 @@ set_cinnamon() {
 
 ## Set wallpaper in GNOME
 set_gnome() {
-	gsettings set org.gnome.desktop.background picture-uri "file:///$1"
+	gsettings set org.gnome.desktop.background $GKEY "file:///$1"
 	gsettings set org.gnome.desktop.screensaver picture-uri "file:///$1"
 }
 
@@ -133,7 +133,12 @@ case "$OSTYPE" in
 				elif [[ "$DESKTOP_SESSION" =~ ^(/usr/share/xsessions/plasma|NEON|Neon|neon|PLASMA|Plasma|plasma|KDE|Kde|kde)$ ]]; then
 					SETTER=set_kde
 				elif [[ "$DESKTOP_SESSION" =~ ^(PANTHEON|Pantheon|pantheon|GNOME|Gnome|gnome|Gnome-xorg|gnome-xorg|UBUNTU|Ubuntu|ubuntu|DEEPIN|Deepin|deepin|POP|Pop|pop|ZORIN|Zorin|zorin|budgie-desktop)$ ]]; then
-					SETTER=set_gnome
+					color_scheme=$(gsettings get org.gnome.desktop.interface color-scheme 2>/dev/null)
+					GKEY="picture-uri"
+					if [[ "$color_scheme" =~ 'dark' ]]; then
+						GKEY="picture-uri-dark"
+					fi
+						SETTER=set_gnome
 				else 
 					SETTER="feh --bg-fill"
 				fi
